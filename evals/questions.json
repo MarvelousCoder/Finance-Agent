@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "category": "tool",
+        "question": "How much did I spend on food?"
+    },
+    {
+        "id": 2,
+        "category": "tool",
+        "question": "What are my top merchants?"
+    },
+    {
+        "id": 3,
+        "category": "tool",
+        "question": "Show my largest transaction."
+    },
+    {
+        "id": 4,
+        "category": "prediction",
+        "question": "What is my spending forecast?"
+    },
+    {
+        "id": 5,
+        "category": "prediction",
+        "question": "What is my financial outlook?"
+    }
+]

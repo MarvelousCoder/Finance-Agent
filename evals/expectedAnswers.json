@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "type": "contains",
+        "expected": "12450"
+    },
+    {
+        "id": 2,
+        "type": "contains",
+        "expected": "Swiggy"
+    },
+    {
+        "id": 3,
+        "type": "contains",
+        "expected": "15000"
+    },
+    {
+        "id": 4,
+        "type": "contains",
+        "expected": "forecast"
+    },
+    {
+        "id": 5,
+        "type": "contains",
+        "expected": "outlook"
+    }
+]
