@@ -1,3 +1,4 @@
+//src/agent/financeAgent.ts
 import { getMemory } from "../services/memoryService";
 import { groq } from "./groqClient";
 import { systemPrompt } from "./systemPrompt";
@@ -17,7 +18,7 @@ import { recordFailure } from "./trace/failureTracker";
 //     try {
 //         //INFO: Step 1: Send request to Groq model
 //         const response = await groq.chat.completions.create({
-//             model: "llama-3.3-70b-versatile",
+//             model: "meta-llama/llama-4-scout-17b-16e-instruct",
 //             messages: [
 //                 {
 //                     role: "system",
@@ -75,7 +76,7 @@ import { recordFailure } from "./trace/failureTracker";
 
 //             //INFO: Step 3: Send tool results back to LLM for final answer
 //             const finalResponse = await groq.chat.completions.create({
-//                 model: "llama-3.3-70b-versatile",
+//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
 //                 messages: [
 //                     { role: "system", content: systemPrompt },
 //                     { role: "user", content: userQuery },
@@ -212,7 +213,7 @@ import { recordFailure } from "./trace/failureTracker";
 //         // =========================
 //         for (let i = 0; i < 5; i++) {
 //             const response = await groq.chat.completions.create({
-//                 model: "llama-3.3-70b-versatile",
+//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
 //                 messages,
 //                 tools: groqTools,
 //                 tool_choice: "auto",
@@ -364,7 +365,7 @@ import { recordFailure } from "./trace/failureTracker";
 //         // =========================
 //         else {
 //             const finalResponse = await groq.chat.completions.create({
-//                 model: "llama-3.3-70b-versatile",
+//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
 //                 messages,
 //             });
 
@@ -587,12 +588,20 @@ ${memoryContext}`,
 
         const collectedToolResults: any[] = [];
 
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 10; i++) {
+            console.log(
+                JSON.stringify(
+                    groqTools,
+                    null,
+                    2
+                )
+            );
             const response = await groq.chat.completions.create({
-                model: "llama-3.3-70b-versatile",
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
                 messages,
                 tools: groqTools,
                 tool_choice: "auto",
+                temperature:0,
             });
 
             const message = response.choices[0].message;
@@ -729,7 +738,7 @@ ${memoryContext}`,
         }
 
         // const finalResponse = await groq.chat.completions.create({
-        //     model: "llama-3.3-70b-versatile",
+        //     model: "meta-llama/llama-4-scout-17b-16e-instruct",
         //     messages,
         // });
         // IDEA: Less generic
@@ -737,7 +746,7 @@ ${memoryContext}`,
 
         // try {
         //     finalResponse = await groq.chat.completions.create({
-        //         model: "llama-3.3-70b-versatile",
+        //         model: "meta-llama/llama-4-scout-17b-16e-instruct",
         //         messages,
         //     });
 
@@ -763,8 +772,9 @@ ${memoryContext}`,
         let finalResponse
         try {
             finalResponse = await groq.chat.completions.create({
-                model: "llama-3.3-70b-versatile",
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
                 messages,
+                temperature: 0
             });
 
         } catch (err: any) {
@@ -780,9 +790,12 @@ ${memoryContext}`,
             throw err;
         }
 
-        const finalContent =
-            finalResponse.choices[0].message.content ||
-            "No response generated.";
+        const finalContent = (
+            finalResponse.choices[0].message.content || "No response generated."
+        )
+            .replace(/\[\s*\{[\s\S]*?"name":\s*"get[\s\S]*?\]\s*/g, "")
+            .replace(/<function[\s\S]*?<\/function>/g, "")
+        .trim();
 
         const insights = generateInsights(collectedToolResults, memory);
 

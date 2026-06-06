@@ -77,6 +77,16 @@ FOR getSpendingSummary TOOL:
 - NEVER pass category names like "food", "rent", "travel"
 - NEVER pass date filters unless explicitly required
 
+getHoldingReturn:
+- Call listFunds FIRST to get valid fundIds from holdings list
+- Then call getHoldingReturn(fundId) for each holding
+- Shows realised return: current value vs purchase cost
+
+getAllHoldingReturns:
+- Use this for "show holding returns" or "portfolio worth" questions
+- Returns all holdings with current value, profit, and return % in one call
+- NEVER loop getHoldingReturn for each fund — use this instead
+
 ────────────────────────────
 STRICT TOOL RULES
 ────────────────────────────

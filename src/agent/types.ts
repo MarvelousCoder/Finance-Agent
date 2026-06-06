@@ -4,6 +4,7 @@ export type AgentTool = {
     name: string;
     description: string;
     schema: z.ZodSchema<any>;
+    jsonSchema: any;
     execute: (input: any) => Promise<any>;
   };
 

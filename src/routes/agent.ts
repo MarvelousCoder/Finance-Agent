@@ -42,4 +42,33 @@ router.post("/run", async (req, res) => {
     }
 });
 
+router.post("/ask", async (req, res) => {
+    try {
+        const { question } = req.body;
+
+        if (!question) {
+            return res.status(400).json({
+                error: "Question is required"
+            });
+        }
+
+        const agentResult = await financeAgent(question);
+
+        const answer =
+            (agentResult as any).finalResult ??
+            (agentResult as any).result ??
+            "No response generated";
+
+        return res.json({
+            answer,
+            requestId: agentResult.requestId
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            error: "Agent execution failed"
+        });
+    }
+});
+
 export default router;

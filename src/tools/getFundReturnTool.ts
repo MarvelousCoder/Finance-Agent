@@ -27,8 +27,8 @@ export async function getFundReturnTool(
     const { fundId, startDate, endDate, investedAmount } = input;
 
     //IDEA: Default: use full available range if not provided
-    const start = startDate || "1900-01-01";
-    const end = endDate || new Date().toISOString().split("T")[0];
+    const start = startDate || "2023-04-01";
+    const end = endDate || "2025-03-01";
 
     //IDEA: Get NAV at start and end
     const startNavData = await getNavBeforeDate(fundId, start);

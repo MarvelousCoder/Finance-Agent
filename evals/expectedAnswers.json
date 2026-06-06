@@ -2,17 +2,17 @@
     {
         "id": 1,
         "type": "contains",
-        "expected": "12450"
+        "expected": "112,203"
     },
     {
         "id": 2,
         "type": "contains",
-        "expected": "Swiggy"
+        "expected": "₹"
     },
     {
         "id": 3,
         "type": "contains",
-        "expected": "15000"
+        "expected": "35548"
     },
     {
         "id": 4,
@@ -23,5 +23,50 @@
         "id": 5,
         "type": "contains",
         "expected": "outlook"
+    },
+    {
+        "id": 6,
+        "type": "contains",
+        "expected": "INR"
+    },
+    {
+        "id": 7,
+        "type": "contains",
+        "expected": "4711"
+    },
+    {
+        "id": 8,
+        "type": "contains",
+        "expected": "743,547"
+    },
+    {
+        "id": 9,
+        "type": "contains",
+        "expected": "xyzunknownmerchant"
+    },
+    {
+        "id": 10,
+        "type": "contains",
+        "expected": "111234"
+    },
+    {
+        "id": 11,
+        "type": "contains",
+        "expected": "%"
+    },
+    {
+        "id": 12,
+        "type": "contains",
+        "expected": "return"
+    },
+    {
+        "id": 13,
+        "type": "contains",
+        "expected": "recurring"
+    },
+    {
+        "id": 14,
+        "type": "contains",
+        "expected": "food"
     }
 ]

@@ -1,14 +1,22 @@
 import fs from "fs/promises";
 import path from "path";
 import { pool } from "../src/db/connection.js";
+import { getDataDir } from "./utils/getDataDir";
 
-async function loadTransactions() {
-    const sample = process.argv[2] || "sample_a";
+export async function loadTransactions() {
+    // const sample = process.argv[2] || "sample_a";
+    // const dataDir =
+    //     process.env.DATA_DIR ||
+    //     path.join(process.cwd(), "data", "sample_a");
+
+    // const filePath = path.join(
+    //     process.cwd(),
+    //     "data",
+    //     "transactions.json"
+    // );
 
     const filePath = path.join(
-        process.cwd(),
-        "data",
-        sample,
+        getDataDir(),
         "transactions.json"
     );
 
@@ -46,9 +54,10 @@ async function loadTransactions() {
         inserted += result.rowCount ?? 0;
     }
 
+    
     console.log(`Inserted ${inserted} transactions`);
-
-    await pool.end();
+    
+    // await pool.end();
 }
 
-loadTransactions().catch(console.error);
+// loadTransactions().catch(console.error);

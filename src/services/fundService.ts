@@ -62,3 +62,11 @@ export async function getFunds() {
     return result.rows;
 }
 
+export async function getAllFunds() {
+    const result = await pool.query(
+        `SELECT id as fund_id, name as fund_name, category
+         FROM funds
+         ORDER BY name`
+    );
+    return result.rows;
+}

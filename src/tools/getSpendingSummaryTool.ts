@@ -11,8 +11,8 @@ import {
 export const spendingSummarySchema = z.object({
     type: z.enum(["total", "category", "merchant"]).default("total"),
 
-    startDate: z.string(),
-    endDate: z.string(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
 });
 
 //INFO: Tool implementation
@@ -22,8 +22,8 @@ export async function getSpendingSummaryTool(
     const { type, startDate, endDate } = input;
 
     //INFO: If missing dates → service should decide full range
-    const safeStartDate = startDate ?? "1900-01-01";
-    const safeEndDate = endDate ?? "2100-01-01";
+    const safeStartDate = (startDate && startDate.trim()) ? startDate : "1900-01-01";
+    const safeEndDate = (endDate && endDate.trim()) ? endDate : "2100-01-01";
 
     //NOTE: Case 1: Total spending
     if (type === "total") {
@@ -32,9 +32,11 @@ export async function getSpendingSummaryTool(
 
     //NOTE: Case 2: Category breakdown
     if (type === "category") {
-        return await getSpendingByCategory(safeStartDate, safeEndDate);
+        return await getSpendingByCategory(
+            safeStartDate,
+            safeEndDate
+        );
     }
-    else throw new Error("Phase7 test failure");
 
     //NOTE: Case 3: Merchant breakdown
     if (type === "merchant") {

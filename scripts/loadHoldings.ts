@@ -1,14 +1,22 @@
 import fs from "fs/promises";
 import path from "path";
 import { pool } from "../src/db/connection.js";
+import { getDataDir } from "./utils/getDataDir.js";
 
-async function loadHoldings() {
-    const sample = process.argv[2] || "sample-a";
+export async function loadHoldings() {
+    // const sample = process.argv[2] || "sample_a";
+    // const dataDir =
+    //     process.env.DATA_DIR ||
+    //     path.join(process.cwd(), "data", "sample_a");
+
+    // const filePath = path.join(
+    //     process.cwd(),
+    //     "data",
+    //     "holdings.json"
+    // );
 
     const filePath = path.join(
-        process.cwd(),
-        "data",
-        sample,
+        getDataDir(),
         "holdings.json"
     );
 
@@ -41,10 +49,10 @@ async function loadHoldings() {
 
     console.log(`Inserted ${inserted} holdings`);
 
-    await pool.end();
+    // await pool.end();
 }
 
-loadHoldings().catch((error) => {
-    console.error(error);
-    process.exit(1);
-});
+// loadHoldings().catch((error) => {
+//     console.error(error);
+//     process.exit(1);
+// });

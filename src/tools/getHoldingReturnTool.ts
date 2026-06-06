@@ -45,11 +45,11 @@ export async function getHoldingReturnTool(
 
     //INFO:  Compute portfolio metrics
     for (const h of holdings) {
-        const quantity = Number(h.quantity);
-        const buyPrice = Number(h.buy_price || h.avg_buy_price || 0);
-
-        totalInvested += quantity * buyPrice;
-        currentValue += quantity * currentNav;
+        const units = Number(h.units);
+        const purchaseNav = Number(h.purchase_nav);
+    
+        totalInvested += units * purchaseNav;
+        currentValue += units * currentNav;
     }
 
     const profit = currentValue - totalInvested;

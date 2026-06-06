@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import agentRouter from "./routes/agent";
 import traceRouter from "./routes/trace";
+import askRouter from "./routes/ask";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
  */
 app.use("/agent", agentRouter);
 app.use("/trace", traceRouter);
+app.use("/ask", askRouter);
 
 app.get("/", (_, res) => {
     res.json({

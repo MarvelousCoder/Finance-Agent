@@ -10,6 +10,7 @@
     "load:funds": "tsx scripts/loadFunds.ts",
     "load:holdings": "tsx scripts/loadHoldings.ts",
     "validate:data": "tsx scripts/validateData.ts",
+    "ingest": "tsx scripts/ingest.ts",
     "evals": "ts-node evals/runEvals.ts"
   },
   "keywords": [],

@@ -1,17 +1,17 @@
 [
     {
         "id": 1,
-        "category": "tool",
+        "category": "spending",
         "question": "How much did I spend on food?"
     },
     {
         "id": 2,
-        "category": "tool",
-        "question": "What are my top merchants?"
+        "category": "merchant",
+        "question": "What are my top merchants by spending?"
     },
     {
         "id": 3,
-        "category": "tool",
+        "category": "spending",
         "question": "Show my largest transaction."
     },
     {
@@ -23,5 +23,50 @@
         "id": 5,
         "category": "prediction",
         "question": "What is my financial outlook?"
+    },
+    {
+        "id": 6,
+        "category": "date_filter",
+        "question": "How much did I spend in March 2025?"
+    },
+    {
+        "id": 7,
+        "category": "refunds",
+        "question": "How much did I spend on food in January 2025 after refunds?"
+    },
+    {
+        "id": 8,
+        "category": "transfers",
+        "question": "What was my total actual spending in Q1 2025 excluding transfers?"
+    },
+    {
+        "id": 9,
+        "category": "no_data",
+        "question": "Show spending for merchant xyzunknownmerchant"
+    },
+    {
+        "id": 10,
+        "category": "alias",
+        "question": "How much did I spend at amazon?"
+    },
+    {
+        "id": 11,
+        "category": "fund_return",
+        "question": "Show fund returns"
+    },
+    {
+        "id": 12,
+        "category": "holding_return",
+        "question": "Show holding returns"
+    },
+    {
+        "id": 13,
+        "category": "recurring",
+        "question": "Which merchants look like recurring subscriptions?"
+    },
+    {
+        "id": 14,
+        "category": "category",
+        "question": "Show spending by category"
     }
 ]
