@@ -64,9 +64,6 @@ export function normalizeMerchantName(rawMerchant: string): string {
     // Collapse multiple spaces
     cleaned = cleaned.replace(/\s+/g, " ").trim();
 
-    // Extract first meaningful word group (up to 3 words)
-    // This handles "SWIGGY INSTAMART" → "SWIGGY INSTAMART"
-    // and "SWIGGY BANGALORE 123" → "SWIGGY BANGALORE"
     const words = cleaned.split(" ").filter(w => w.length > 1);
 
     // Remove trailing numeric tokens

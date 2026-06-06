@@ -1,5 +1,3 @@
-// src/services/holdingService.ts
-
 import { pool } from "../db/connection";
 
 //INFO:  Get all holdings for a user/fund snapshot

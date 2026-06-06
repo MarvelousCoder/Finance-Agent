@@ -1,14 +1,3 @@
-// src/services/unifiedPredictionService.ts
-
-/**
- * Phase 5E - Unified Prediction Engine
- *
- * Combines:
- * - Spending Forecast (5A)
- * - Anomaly Prediction (5B)
- * - Investment Forecast (5C)
- * - Behavior Forecast (5D)
- */
 
 import { PredictionService } from "./predictionService";
 import { InvestmentForecastService } from "./investmentForecastService";

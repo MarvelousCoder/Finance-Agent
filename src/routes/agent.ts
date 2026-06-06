@@ -17,7 +17,7 @@ router.post("/chat", async (req, res) => {
             const content = chunk.choices[0]?.delta?.content;
 
             if (content) {
-                res.write(content); // 🔥 stream to client
+                res.write(content); 
             }
         }
 

@@ -1,5 +1,3 @@
-// src/services/spendingService.ts
-
 import { pool } from "../db/connection";
 
 export async function getTotalSpending(startDate: string, endDate: string) {

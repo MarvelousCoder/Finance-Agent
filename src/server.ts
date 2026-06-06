@@ -22,8 +22,7 @@ app.use("/ask", askRouter);
 
 app.get("/", (_, res) => {
     res.json({
-        status: "Provue Finance API running",
-        phase: "Phase 7 Observability Enabled"
+        status: "Provue Finance API running"
     });
 });
 

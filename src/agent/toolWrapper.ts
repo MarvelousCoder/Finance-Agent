@@ -1,38 +1,10 @@
-// import { ToolResult } from "./types";
-
-// export async function safeExecuteTool(
-//     name: string,
-//     fn: Function,
-//     input: any
-// ): Promise<ToolResult> {
-//     try {
-//         const result = await fn(input);
-
-//         return {
-//             success: true,
-//             tool: name,
-//             data: result,
-//         };
-//     } catch (error: any) {
-//         return {
-//             success: false,
-//             tool: name,
-//             error: error.message || "Tool execution failed",
-//         };
-//     }
-// }
-
 import { ToolResult } from "./types";
 
-/**
- * Strict tool input sanitizer
- * Prevents malformed Groq outputs from crashing execution
- */
 function sanitizeInput(input: any) {
     // reject null/undefined
     if (!input) return {};
 
-    // if string → try parsing safely
+    // if string do try parsing safely
     if (typeof input === "string") {
         try {
             return JSON.parse(input);
@@ -41,7 +13,7 @@ function sanitizeInput(input: any) {
         }
     }
 
-    // if already object → shallow clone only
+    // if already object then shallow clone only
     if (typeof input === "object") {
         return { ...input };
     }
@@ -49,9 +21,8 @@ function sanitizeInput(input: any) {
     return {};
 }
 
-/**
- * Runtime validator for known bad values
- */
+// IDEA: Runtime validator for known bad values
+
 function validateToolInput(name: string, input: any) {
     if (!input || typeof input !== "object") return input;
 

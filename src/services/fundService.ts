@@ -1,5 +1,3 @@
-// src/services/fundService.ts
-
 import { pool } from "../db/connection";
 
 //INFO: Fetch NAV history for a fund in date range

@@ -14,390 +14,9 @@ import { randomUUID } from "crypto";
 import { runToolWithTrace } from "./trace/toolSpan";
 import { recordFailure } from "./trace/failureTracker";
 
-// export async function financeAgent(userQuery: string) {
-//     try {
-//         //INFO: Step 1: Send request to Groq model
-//         const response = await groq.chat.completions.create({
-//             model: "meta-llama/llama-4-scout-17b-16e-instruct",
-//             messages: [
-//                 {
-//                     role: "system",
-//                     content: systemPrompt,
-//                 },
-//                 {
-//                     role: "user",
-//                     content: userQuery,
-//                 },
-//             ],
 
-//             //IDEA: Phase 4: tool binding (core orchestration)
-//             tools: toolRegistry as any,
-//             tool_choice: "auto",
-//         });
+// IDEA: Compress tool result before sending back to LLM
 
-//         const message = response.choices[0].message;
-
-//         //INFO: Step 2: If model calls a tool
-//         if (message.tool_calls && message.tool_calls.length > 0) {
-//             const toolResults = [];
-
-//             for (const call of message.tool_calls) {
-//                 if (call.type !== "function") continue;
-
-//                 const tool = toolRegistry.find(
-//                     (t) => t.name === call.function.name
-//                 );
-
-//                 if (!tool) continue;
-
-//                 // IDEA: STEP 1: parse args
-//                 const rawArgs = JSON.parse(call.function.arguments);
-
-//                 // IDEA: STEP 2: validate via Zod
-//                 const validatedArgs = tool.schema.safeParse(rawArgs);
-
-//                 if (!validatedArgs.success) {
-//                     toolResults.push({
-//                         tool: tool.name,
-//                         error: "Invalid arguments",
-//                         details: validatedArgs.error.flatten(),
-//                     });
-//                     continue;
-//                 }
-
-//                 // IDEA: STEP 3: execute safely
-//                 const result = await tool.execute(validatedArgs.data);
-
-//                 toolResults.push({
-//                     tool: tool.name,
-//                     result,
-//                 });
-//             }
-
-//             //INFO: Step 3: Send tool results back to LLM for final answer
-//             const finalResponse = await groq.chat.completions.create({
-//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
-//                 messages: [
-//                     { role: "system", content: systemPrompt },
-//                     { role: "user", content: userQuery },
-//                     {
-//                         role: "assistant",
-//                         content: JSON.stringify(toolResults),
-//                     },
-//                 ],
-//             });
-
-//             return finalResponse.choices[0].message.content;
-//         }
-
-//         // If no tool needed
-//         return message.content;
-//     } catch (error) {
-//         console.error("Agent Error:", error);
-//         return "Failed to process finance request.";
-//     }
-// }
-
-
-// // NOTE: 2 nd updation
-// function compressToolResult(result: any) {
-//     const data = result.data;
-
-//     if (Array.isArray(data)) {
-//         return {
-//             success: result.success,
-//             tool: result.tool,
-//             count: data.length,
-//             sample: data.slice(0, 10),
-//         };
-//     }
-
-//     return result;
-// }
-
-// /**
-//  * INFO: Clean tool name (removes Groq artifacts like <function=...>)
-//  */
-// function sanitizeToolName(name: string) {
-//     if (!name) return "";
-//     return name.split(" ")[0].split("{")[0].trim();
-// }
-
-// /**
-//  * INFO: Deterministic largest transaction (NO LLM)
-//  */
-// function getLargestTransaction(txns: any[]) {
-//     return txns.reduce((max, t) =>
-//         Math.abs(Number(t.amount)) > Math.abs(Number(max.amount)) ? t : max
-//     );
-// }
-
-// /**
-//  * INFO: Detect intent for deterministic routing
-//  */
-// function detectIntent(query: string) {
-//     const q = query.toLowerCase();
-
-//     return {
-//         isLargest: q.includes("largest") || q.includes("highest transaction"),
-//         isForecast:
-//             q.includes("forecast") ||
-//             q.includes("prediction") ||
-//             q.includes("spending outlook") ||
-//             q.includes("next month"),
-//     };
-// }
-
-// function safeParseToolArgs(args: any) {
-//     if (!args) return {};
-
-//     if (typeof args !== "string") return args;
-
-//     try {
-//         // remove function wrapper artifacts
-//         let cleaned = args
-//             .replace(/<function=.*?>/g, "")
-//             .replace(/<\/function>/g, "")
-//             .trim();
-
-//         // extract JSON part only
-//         const start = cleaned.indexOf("{");
-//         const end = cleaned.lastIndexOf("}");
-
-//         if (start === -1 || end === -1) return {};
-
-//         cleaned = cleaned.slice(start, end + 1);
-
-//         return JSON.parse(cleaned);
-//     } catch {
-//         return {};
-//     }
-// }
-
-// export async function financeAgent(userQuery: string) {
-//     try {
-//         // =========================
-//         // MEMORY LOAD
-//         // =========================
-//         const memory = await getMemory("user_1");
-
-//         const memoryContext = memory
-//             .slice(0, 5)
-//             .map((m) => `${m.type}:${m.key}`)
-//             .join("\n");
-
-//         const intent = detectIntent(userQuery);
-
-
-//         // =========================
-//         // TOOL CHAIN SETUP
-//         // =========================
-//         let messages: any[] = [
-//             {
-//                 role: "system",
-//                 content: `${systemPrompt}
-
-// User Memory:
-// ${memoryContext}`,
-//             },
-//             {
-//                 role: "user",
-//                 content: userQuery,
-//             },
-//         ];
-
-//         const collectedToolResults: any[] = [];
-
-//         // =========================
-//         // TOOL LOOP
-//         // =========================
-//         for (let i = 0; i < 5; i++) {
-//             const response = await groq.chat.completions.create({
-//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
-//                 messages,
-//                 tools: groqTools,
-//                 tool_choice: "auto",
-//             });
-
-//             const message = response.choices[0].message;
-
-//             console.log("\n===== TOOL DEBUG =====");
-//             console.log("tool_calls:", JSON.stringify(message.tool_calls, null, 2));
-//             console.log("content:", message.content);
-//             console.log("======================\n");
-
-//             if (!message.tool_calls || message.tool_calls.length === 0) {
-//                 break;
-//             }
-
-//             const toolMessages: any[] = [];
-
-//             for (const call of message.tool_calls) {
-//                 if (call.type !== "function") continue;
-
-//                 const tool = toolRegistry.find(
-//                     (t) => t.name === sanitizeToolName(call.function.name)
-//                 );
-
-//                 if (!tool) continue;
-
-//                 let rawArgs = {};
-
-//                 try {
-//                     // const cleanedArgs =
-//                     //     typeof call.function.arguments === "string"
-//                     //         ? call.function.arguments
-//                     //             .replace(/<.*?>/g, "")
-//                     //             .trim()
-//                     //         : "{}";
-
-//                     rawArgs = safeParseToolArgs(call.function.arguments);
-//                 } catch {
-//                     rawArgs = {};
-//                 }
-
-//                 const validated = tool.schema.safeParse(rawArgs);
-
-//                 if (!validated.success) {
-//                     const errorResult = {
-//                         success: false,
-//                         tool: tool.name,
-//                         error: validated.error.flatten(),
-//                     };
-
-//                     collectedToolResults.push(errorResult);
-
-//                     toolMessages.push({
-//                         role: "tool",
-//                         tool_call_id: call.id,
-//                         content: JSON.stringify(errorResult),
-//                     });
-
-//                     console.log("❌ TOOL VALIDATION FAILED:", tool.name, validated.error);
-
-//                     continue;
-//                 }
-
-//                 try {
-//                     const toolData = await tool.execute(validated.data);
-
-//                     const result = {
-//                         success: true,
-//                         tool: tool.name,
-//                         data: toolData,
-//                     };
-
-//                     const compressed = compressToolResult(result);
-//                     collectedToolResults.push(compressed);
-
-//                     await saveMemory("user_1", "insight", tool.name, {
-//                         success: result.success,
-//                         tool: result.tool,
-//                     });
-
-//                     toolMessages.push({
-//                         role: "tool",
-//                         tool_call_id: call.id,
-//                         content: JSON.stringify(compressed),
-//                     });
-//                 } catch (err: any) {
-//                     const errorResult = {
-//                         success: false,
-//                         tool: tool.name,
-//                         error: err.message,
-//                     };
-
-//                     toolMessages.push({
-//                         role: "tool",
-//                         tool_call_id: call.id,
-//                         content: JSON.stringify(errorResult),
-//                     });
-//                 }
-//             }
-
-//             messages.push({
-//                 role: "assistant",
-//                 content: null,
-//                 tool_calls: message.tool_calls,
-//             });
-
-//             messages.push(...toolMessages);
-//         }
-
-//         // =========================
-//         // FINAL OUTPUT (HYBRID ENGINE)
-//         // =========================
-
-//         let finalContent = "";
-
-//         const txns = await getAllTransactions();
-
-//         // =========================
-//         // Q3: LARGEST TRANSACTION (DETERMINISTIC)
-//         // =========================
-//         if (intent.isLargest) {
-//             const largest = getLargestTransaction(txns);
-
-//             finalContent = `
-// The largest transaction is ${Math.round(Math.abs(largest.amount))} to ${largest.merchant}.
-//             `.trim();
-//         }
-
-//         // =========================
-//         // Q4: FORECAST (USE REAL MODEL)
-//         // =========================
-//         else if (intent.isForecast) {
-//             const forecast =
-//                 await UnifiedPredictionService.generateForecast();
-
-//             finalContent = `
-// Outlook: ${forecast.financialOutlook.toLowerCase()}
-// Spending Risk: ${forecast.spendingRisk}
-// Investment Risk: ${forecast.investmentRisk}
-
-// Predicted Spending:
-// ${forecast.predictions.join("\n")}
-//             `.trim();
-//         }
-
-//         // =========================
-//         // DEFAULT: LLM RESPONSE
-//         // =========================
-//         else {
-//             const finalResponse = await groq.chat.completions.create({
-//                 model: "meta-llama/llama-4-scout-17b-16e-instruct",
-//                 messages,
-//             });
-
-//             finalContent =
-//                 finalResponse.choices[0].message.content ||
-//                 "No response generated.";
-//         }
-
-//         // =========================
-//         // INSIGHTS ENGINE
-//         // =========================
-//         const insights = generateInsights(collectedToolResults, memory);
-
-//         return `
-// ${finalContent}
-
-// Smart Insights:
-// ${insights.length ? insights.join("\n") : "No anomalies detected"}
-//         `.trim();
-//     } catch (error) {
-//         console.error(error);
-//         return "Agent execution failed.";
-//     }
-// }
-
-
-
-
-
-/**
- * Compress tool result before sending back to LLM
- */
 function compressToolResult(result: any) {
     const data = result.data;
 
@@ -413,17 +32,15 @@ function compressToolResult(result: any) {
     return result;
 }
 
-/**
- * Clean tool name from Groq artifacts
- */
+ // IDEA: Clean tool name from Groq artifacts
+
 function sanitizeToolName(name: string) {
     if (!name) return "";
     return name.split(" ")[0].split("{")[0].trim();
 }
 
-/**
- * STRICT TOOL VALIDATION
- */
+ // IDEA: STRICT TOOL VALIDATION
+
 function isValidToolCall(toolName: string, args: any): boolean {
     if (toolName === "getSpendingSummary") {
         return ["total", "category", "merchant"].includes(args?.type);
@@ -436,9 +53,8 @@ function isValidToolCall(toolName: string, args: any): boolean {
     return true;
 }
 
-/**
- * SAFE TOOL SANITIZER
- */
+// IDEA: SAFE TOOL SANITIZER
+
 function sanitizeToolArgs(toolName: string, args: any) {
     if (!args || typeof args !== "object") return args;
 
@@ -457,9 +73,8 @@ function sanitizeToolArgs(toolName: string, args: any) {
     return args;
 }
 
-/**
- * SAFE largest transaction (6B FIX)
- */
+// IDEA: SAFE largest transaction (6B FIX)
+
 function getLargestTransaction(txns: any[]) {
     return txns.reduce((max, t) => {
         const tAmt = Math.abs(Number(t?.amount || 0));
@@ -469,9 +84,9 @@ function getLargestTransaction(txns: any[]) {
     }, txns[0] || {});
 }
 
-/**
- * Intent detection
- */
+
+// IDEA: Intent detection
+
 function detectIntent(query: string) {
     const q = query.toLowerCase();
 
@@ -485,9 +100,8 @@ function detectIntent(query: string) {
     };
 }
 
-/**
- * Safe tool parser
- */
+// IDEA: Safe tool parser
+
 function safeParseToolArgs(args: any) {
     if (!args) return {};
     if (typeof args !== "string") return args;
@@ -513,7 +127,7 @@ function safeParseToolArgs(args: any) {
 
 export async function financeAgent(userQuery: string) {
 
-    // 🔷 PHASE 7A — CREATE REQUEST TRACE
+    // PHASE 7A — CREATE REQUEST TRACE
     const requestId = randomUUID();
     createTrace(requestId, userQuery);
 
@@ -529,11 +143,6 @@ export async function financeAgent(userQuery: string) {
 
         const txns = await getAllTransactions();
 
-        /**
-         * =========================
-         * DETERMINISTIC ROUTING
-         * =========================
-         */
         if (intent.isLargest) {
             const largest = getLargestTransaction(txns);
 
@@ -565,12 +174,6 @@ forecast: ${forecast.predictions.join(", ")}
 
             return {result,requestId};
         }
-
-        /**
-         * =========================
-         * TOOL FLOW
-         * =========================
-         */
 
         const messages: any[] = [
             {

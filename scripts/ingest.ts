@@ -1,5 +1,3 @@
-// scripts/ingest.ts
-
 import { loadTransactions } from "./loadTransactions";
 import { loadFunds } from "./loadFunds";
 import { loadHoldings } from "./loadHoldings";

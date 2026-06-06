@@ -7,7 +7,7 @@ A finance-research AI agent that answers natural-language questions about person
 ## Live Deployment
 
 ```
-POST https://<your-railway-url>/ask
+POST https://finance-agent-production-732b.up.railway.app/ask
 ```
 
 

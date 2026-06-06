@@ -1,8 +1,5 @@
 
-
-
 // INFO:- Behavioral Forecasting Engine-Recurring merchant behavior,Dominant spending categories,Weekend spending tendencies,Spending frequency patterns
-
 
 import { getAllTransactions } from "./transactionService";
 
@@ -24,9 +21,6 @@ type BehaviorForecastResult = {
 
 export class BehaviorForecastService {
 
-    /**
-     * MAIN ENTRY POINT
-     */
     static async forecastBehavior(): Promise<BehaviorForecastResult> {
 
         const transactions =
@@ -69,9 +63,9 @@ export class BehaviorForecastService {
         };
     }
 
-    /**
-     * Detect merchants that appear frequently
-     */
+
+    // IDEA: Detect merchants that appear frequently
+    
     private static detectRecurringMerchants(
         transactions: any[]
     ): BehaviorInsight[] {
@@ -111,9 +105,9 @@ export class BehaviorForecastService {
         return insights;
     }
 
-    /**
-     * Detect dominant spending categories
-     */
+
+    // IDEA:  Detect dominant spending categories
+
     private static detectCategoryTrends(
         transactions: any[]
     ): BehaviorInsight[] {
@@ -153,9 +147,9 @@ export class BehaviorForecastService {
         return insights;
     }
 
-    /**
-     * Detect weekend spending preference
-     */
+
+    // IDEA: Detect weekend spending preference
+
     private static detectWeekendBehavior(
         transactions: any[]
     ): BehaviorInsight[] {
@@ -207,9 +201,9 @@ export class BehaviorForecastService {
         return [];
     }
 
-    /**
-     * Detect high transaction frequency
-     */
+
+    // IDEA: Detect high transaction frequency
+
     private static detectFrequencyTrend(
         transactions: any[]
     ): BehaviorInsight[] {

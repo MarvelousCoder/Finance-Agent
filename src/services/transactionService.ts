@@ -1,71 +1,4 @@
-// src/services/transactionService.ts
-
 import { pool } from "../db/connection";
-
-// //INFO:  Fetch transactions within a date range
-// export async function getTransactions(startDate: string, endDate: string) {
-//     const result = await pool.query(
-//         `
-//     SELECT *
-//     FROM transactions
-//     WHERE txn_date BETWEEN $1 AND $2
-//     ORDER BY txn_date ASC
-//     `,
-//         [startDate, endDate]
-//     );
-
-//     return result.rows;
-// }
-
-// //INFO: Fetch transactions by category
-// export async function getTransactionsByCategory(category: string) {
-//     const result = await pool.query(
-//         `
-//     SELECT *
-//     FROM transactions
-//     WHERE category = $1
-//     ORDER BY txn_date DESC
-//     `,
-//         [category]
-//     );
-
-//     return result.rows;
-// }
-
-// //INFO:  Fetch transactions by merchant
-// export async function getTransactionsByMerchant(merchant: string) {
-//     const result = await pool.query(
-//         `
-//     SELECT *
-//     FROM transactions
-//     WHERE merchant = $1
-//     ORDER BY txn_date DESC
-//     `,
-//         [merchant]
-//     );
-
-//     return result.rows;
-// }
-// // INFO: Fetch ALL transactions (used for analytics + prediction engine)
-// export async function getAllTransactions() {
-//     const result = await pool.query(
-//         `
-//         SELECT *
-//         FROM transactions
-//         ORDER BY txn_date ASC
-//         `
-//     );
-
-//     return result.rows;
-// }
-
-
-/**
- * =========================
- * NORMALIZATION HELPERS
- * =========================
- */
-
 
 // NOTE: 2nd Updation
 
@@ -238,11 +171,8 @@ function normalizeAmount(amount: any) {
     return isNaN(num) ? 0 : num;
 }
 
-/**
- * =========================
- * CORE TRANSFORM
- * =========================
- */
+// IDEA: CORE TRANSFORM
+
 function normalizeTxn(tx: any) {
     if (!tx) return null;
 
@@ -254,11 +184,6 @@ function normalizeTxn(tx: any) {
     };
 }
 
-/**
- * =========================
- * CLASSIFICATION LAYER (6C FIX)
- * =========================
- */
 function classifyTransaction(tx: any) {
     const merchant = tx.merchant || "";
     const category = tx.category || "";
@@ -280,11 +205,8 @@ function classifyTransaction(tx: any) {
     };
 }
 
-/**
- * =========================
- * DEDUPLICATION (STRICT)
- * =========================
- */
+// IDEA: DEDUPLICATION (STRICT)
+
 function deduplicateTransactions(txns: any[]) {
     const seen = new Set<string>();
 
@@ -296,11 +218,8 @@ function deduplicateTransactions(txns: any[]) {
     });
 }
 
-/**
- * =========================
- * FETCH HELPERS
- * =========================
- */
+// IDEA: FETCH HELPERS
+
 
 export async function getTransactions(startDate: string, endDate: string) {
     const result = await pool.query(

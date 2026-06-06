@@ -127,7 +127,7 @@ export function generateInsights(toolResults: any[], memory: any[]) {
 
         if (Math.abs(diff) > baseline * 0.2) {
             insights.push(
-                `⚠️ Spending anomaly detected: ${diff > 0 ? "increase" : "decrease"
+                `Spending anomaly detected: ${diff > 0 ? "increase" : "decrease"
                 } of ~${Math.abs(diff)} compared to last month`
             );
         }
@@ -160,7 +160,7 @@ export function generateInsights(toolResults: any[], memory: any[]) {
 
         if (topMerchant && topMerchant[1] > 5) {
             insights.push(
-                `🏪 High dependency on merchant: ${topMerchant[0]} (${topMerchant[1]} transactions)`
+                `High dependency on merchant: ${topMerchant[0]} (${topMerchant[1]} transactions)`
             );
         }
     }
@@ -175,7 +175,7 @@ export function generateInsights(toolResults: any[], memory: any[]) {
 
     if (validMemories.length > 3) {
         insights.push(
-            `📊 Repeated financial patterns detected over time (trend forming)`
+            `Repeated financial patterns detected over time (trend forming)`
         );
     }
 
